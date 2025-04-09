@@ -1,37 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grid css / auto-fill, auto-fit
 
-## Getting Started
+참고: https://studiomeal.com/archives/533
 
-First, run the development server:
+## Grid
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```css
+grid-template-rows
+grid-template-columns
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```css
+/* column을 200px 200px 500px 으로 만듬 */
+grid-template-columns: 200px 200px 500px;
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+/* column을 1:1:1 비율로 만듬 */
+grid-template-columns: 1fr 1fr 1fr;
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+/* 섞어서 사용할 수 있음 */
+grid-template-columns: 100px 2fr 1fr;
+```
 
-## Learn More
+## repeat 함수
 
-To learn more about Next.js, take a look at the following resources:
+### repeat(반복횟수, 반복값)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```css
+grid-template-columns: repeat(5, 1fr);
+/* 이 둘은 같다 */
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## minmax 함수
 
-## Deploy on Vercel
+### minmax(최소값, 최대값)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+auto-fill의 경우 공간 크기에 따라 컬럼이 늘어나는데 그것의 최소 최대값을 지정할 수 있다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Assignment
+```css
+minmax(100px, 1fr)
+[box    ][box    ][box    ]
+
+/* 둘은 같아보이지만 auto는 컬럼의 내용크기에 따라 다르다 */
+
+minmax(100px, auto)
+[box1][긴글박스][box]
+```
+
+## auto-fit
+
+column의 개수를 미리 정하지 않고 설정된 너비가 허용하는 한 최대한 셀을 채움
+
+```css
+grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+
+/* 컬럼 수의 비해 공간이 넓으면 빈공간이 같은 크기의 빈칸으로 채워진다. */
+[box][box][빈칸][빈칸][빈칸]
+
+```
+
+## auto-fill
+
+column의 개수를 미리 정하지 않고 설정된 너비가 허용하는 한 최대한 셀을 채움
+
+```css
+grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+
+/* 컬럼 수의 비해 공간이 넓으면 빈공간 만큼 균등하게 컬럼의 크기가 늘어난다. */
+[box        ][box        ]...
+
+```
+
+## Tailwind 문법
+
+```css
+/* display: grid; */
+grid
+
+/* grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); */
+grid-cols-[repeat(auto-fill,_minmax(100px,_1fr))]
+
+/* grid-auto-rows: 100px; */
+auto-rows-[100px]
+```
