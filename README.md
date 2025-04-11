@@ -12,12 +12,38 @@
 
 - 예시
   - 검색창: 사용자가 계속 입력하다가 멈췄을 때만 검색
-  - 고 -> 고양 -> 고양이 -> 입력 멈추고 300ms 후 fetch 실행
+  - 고 -> 고양 -> 고양이 -> 입력 멈추고 150ms 후 fetch 실행
 
 ```javascript
-const delayDebounce = setTimeout(() => {
-  fetchData();
-}, 300);
+// /debounce/page.tsx
+
+useEffect(() => {
+  const fetchData = async () => {
+    if (query.length === 0) {
+      setResults([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${query}`
+      );
+      const data = await response.json();
+      const searchData = await data.query.search;
+      // console.log(searchData);
+
+      setResults(searchData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const delayDebounce = setTimeout(() => {
+    fetchData();
+  }, 150);
+
+  return () => clearTimeout(delayDebounce);
+}, [query]);
 ```
 
 ## Throttle
@@ -25,20 +51,30 @@ const delayDebounce = setTimeout(() => {
 #### 지정한 시간마다 최대 1번만 실행
 
 - 예시
-  - 스크롤 이벤트: 너무 자주 실행되니까 300ms에 한 번씩만 실행
-  - 스크롤 중 0ms, 300ms, 600ms, 900ms... 마다 1번씩 실행
+  - 스크롤 이벤트: 너무 자주 실행되니까 200ms에 한 번씩만 실행
+  - 스크롤 중 0ms, 200ms, 400ms, 600ms... 마다 1번씩 실행
 
 ```javascript
-const throttledFetch = async () => {
+// /throttle/page.tsx
+
+const throttledFetch = async (keyword: string) => {
   const now = Date.now();
-  if (now - lastCalled.current < 300) return;
+  if (now - lastCalled.current < 200) return;
 
   lastCalled.current = now;
 
-  const res = await fetch(`FetchURL`);
+  const res = await fetch(
+    `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${keyword}`
+  );
   const data = await res.json();
-  console.log(data);
+  setResults(data.query.search);
 };
+
+useEffect(() => {
+  if (query.trim()) {
+    throttledFetch(query);
+  }
+}, [query]);
 ```
 
 ## 비교정리
