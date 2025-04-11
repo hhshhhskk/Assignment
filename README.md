@@ -87,13 +87,47 @@ auto-rows-[100px]
 
 ### 원인
 
-- minmax(400px, 1fr)는 최소 너비가 400px인 그리드 아이템을 반복해서 만들라는 의미 입니다.
+- minmax(200px, 1fr)는 최소 너비가 200px인 그리드 아이템을 반복해서 만들라는 의미 입니다.
 
-- auto-fill auto-fit은 가능한 한 많은 400px 너비의 그리드 셀을 채워 넣으려고 합니다.
-- 지만 화면 너비가 400px보다 작아지면, 최소값인 400px보다 작은 그리드 셀을 만들 수 없기 때문에, 그리드가 강제로 400px을 유지하면서 오버플로우가 발생합니다.
+- auto-fill auto-fit은 가능한 한 많은 200px 너비의 그리드 셀을 채워 넣으려고 합니다.
+- 지만 화면 너비가 200px보다 작아지면, 최소값인 200px보다 작은 그리드 셀을 만들 수 없기 때문에, 그리드가 강제로 400px을 유지하면서 오버플로우가 발생합니다.
 - 그래서 수평 스크롤이 생기게 됩니다.
 
 ### 해결방안
+
+```javascript
+// /app/tailwind/page.tsx
+
+const TailwindPage = () => {
+  return (
+    <div className="flex flex-col justify-center items-center h-screen">
+      <div className="grid grid-cols-[repeat(auto-fill,_minmax(min(200px,_100%),_1fr))] gap-1 auto-rows-[100px] w-full h-full bg-amber-300">
+        {[1, 2, 1, 2, 1].map((num, idx) => (
+          <div
+            key={idx}
+            className={`${num === 1 ? "bg-red-500" : "bg-blue-500"} text-white`}
+          >
+            auto-fill
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-[repeat(auto-fit,_minmax(min(200px,_100%),_1fr))] gap-1 auto-rows-[100px] w-full h-full   bg-gray-500 ">
+        {[1, 2, 1, 2, 1].map((num, idx) => (
+          <div
+            key={idx}
+            className={`${num === 1 ? "bg-red-500" : "bg-blue-500"} text-white`}
+          >
+            auto-fit
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default TailwindPage;
+```
 
 - 화면이 작아졌을 때 스크롤 없이 내부 요소들이 줄어들도록 하고 싶다면, min()을 활용하거나, overflow: hidden 사용 해야 합니다.
 
@@ -103,8 +137,8 @@ auto-rows-[100px]
 
 - min()
 
-  - min(400px,\_100%)두  값 중 더 작은 값을 선택합니다.
-  - repeat(auto-fit,\_minmax(min(400px,\_100%),\_1fr))
+  - min(200px,\_100%)두  값 중 더 작은 값을 선택합니다.
+  - repeat(auto-fit,\_minmax(min(200px,\_100%),\_1fr))
   - 여기서 100%는 그리드 컨테이너의 너비 기준입니다.
   - 즉, 이 그리드 셀 하나가 차지할 수 있는 최대 너비를 의미하고 셀 하나가 그리드 너비보다 커질 수는 없다는 뜻입니다.
 
