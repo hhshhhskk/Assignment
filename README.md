@@ -7,13 +7,34 @@
 #### 동적 경로에서 파라미터를 가져올 때
 
 ```javascript
-// /post/:id 경로에서 id 파라미터를 추출
-import { useParams } from "next/navigation";
+// /box/[id]/page.tsx
 
-const Post = () => {
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
+import React from "react";
+
+const BoxId = () => {
+  const router = useRouter();
+
   const { id } = useParams();
-  return <h1>Post ID: {id}</h1>;
+
+  return (
+    <div className="flex justify-center items-center gap-30 h-screen bg-blue-100">
+      <div
+        className="cursor-pointer p-3 text-3xl text-white bg-purple-200"
+        onClick={() => router.push("/")}
+      >
+        Home
+      </div>
+      <div className=" flex justify-center items-center w-40 h-40 bg-blue-300 text-white text-4xl">
+        <span>{id}</span>
+      </div>
+    </div>
+  );
 };
+
+export default BoxId;
 ```
 
 ### useSearchParams
@@ -21,19 +42,35 @@ const Post = () => {
 ### 쿼리스트링 값을 가져올 때
 
 ```javascript
-// /search?name=John&id=123 경로에서 쿼리 파라미터를 추출
-import { useSearchParams } from "next/navigation";
+// /box-query/page.tsx
 
-const Search = () => {
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import React from "react";
+
+const BoxQueryPage = () => {
+  const router = useRouter();
+
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const name = searchParams.get("name");
+  const id = Number(searchParams.get("id"));
+
   return (
-    <h1>
-      Search results for: {name} (ID: {id})
-    </h1>
+    <div className="flex justify-center items-center gap-30 h-screen bg-blue-100">
+      <div
+        className="cursor-pointer p-3 text-3xl text-white bg-purple-200"
+        onClick={() => router.push("/")}
+      >
+        Home
+      </div>
+      <div className=" flex justify-center items-center w-40 h-40 bg-blue-300 text-white text-4xl">
+        <span>{id}</span>
+      </div>
+    </div>
   );
 };
+
+export default BoxQueryPage;
 ```
 
 ### 차이점
@@ -71,36 +108,66 @@ const Search = () => {
 
 ## 서버에서 가져오기
 
+### 동적 경로에서 파라미터를 가져올 때
+
 ```javascript
-// /server-box/:id 경로에서 id 파라미터를 추출
+// /server-box/[id]/page.tsx
+
 import React from "react";
+import Link from "next/link";
 
-// 서버 컴포넌트에서 비동기 데이터 처리
 const ServerBoxPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = await params; // params에서 id를 추출
+  const { id } = await params;
 
-  return <div>{id}</div>;
+  return (
+    <div className="flex justify-center items-center gap-30 h-screen bg-blue-100">
+      <Link
+        href="/"
+        className="cursor-pointer p-3 text-3xl text-white bg-purple-200"
+      >
+        Home
+      </Link>
+      <div className=" flex justify-center items-center w-40 h-40 bg-red-300 text-white text-4xl">
+        <span>{id}</span> {/* 서버에서 받은 id 표시 */}
+      </div>
+    </div>
+  );
 };
 
 export default ServerBoxPage;
 ```
 
-```javascript
-// /search?keyword=banana keyword 쿼리 추출
+### 쿼리스트링 값을 가져올 때
 
-interface SearchPageProps {
+```javascript
+// /server-box-query/page.tsx
+
+import React from "react";
+import Link from "next/link";
+
+interface IServerBoxProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
-  const keyword = searchParams.keyword;
+const ServerBoxQueryPage = async ({ searchParams }: IServerBoxProps) => {
+  const { id } = await searchParams;
 
   return (
-    <div>
-      <h1>검색어: {keyword}</h1>
+    <div className="flex justify-center items-center gap-30 h-screen bg-blue-100">
+      <Link
+        href="/"
+        className="cursor-pointer p-3 text-3xl text-white bg-purple-200"
+      >
+        Home
+      </Link>
+      <div className=" flex justify-center items-center w-40 h-40 bg-red-300 text-white text-4xl">
+        <span>{id}</span>
+      </div>
     </div>
   );
-}
+};
+
+export default ServerBoxQueryPage;
 ```
 
 ### 🔸 사용하면 좋은 상황

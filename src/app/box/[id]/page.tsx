@@ -18,7 +18,7 @@ const BoxId = () => {
         Home
       </div>
       <div className=" flex justify-center items-center w-40 h-40 bg-blue-300 text-white text-4xl">
-        <span>{id}</span> {/* 서버에서 받은 id 표시 */}
+        <span>{id}</span>
       </div>
     </div>
   );

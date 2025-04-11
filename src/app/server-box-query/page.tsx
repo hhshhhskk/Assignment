@@ -1,8 +1,12 @@
 import React from "react";
 import Link from "next/link";
 
-const ServerBoxPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = await params;
+interface IServerBoxProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+const ServerBoxQueryPage = async ({ searchParams }: IServerBoxProps) => {
+  const { id } = await searchParams;
 
   return (
     <div className="flex justify-center items-center gap-30 h-screen bg-blue-100">
@@ -19,4 +23,4 @@ const ServerBoxPage = async ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default ServerBoxPage;
+export default ServerBoxQueryPage;
