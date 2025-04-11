@@ -52,3 +52,55 @@ router.push("?page=3", undefined, { shallow: true });
 - 브라우저 주소에는 항상 /board만 보임
 - 페이지 번호를 공유하거나 북마크 불가능
 - 검색/필터링 조건을 URL에 포함시키기 어려움
+
+## nuqs 라이브러리
+
+Next.js 13/14의 App Router 환경에서 쿼리스트링(query string)을 더 쉽고 타입 안정성 있게 다룰 수 있도록 도와주는 React 훅 기반 라이브러리입니다.
+
+### 한줄 정의
+
+- nuqs는 Next.js의 URL 쿼리스트링을 읽고, 수정하고, 반영하는 커스텀 훅 모음입니다.
+
+  - 쿼리스트링을 쉽게 읽고(set/get)
+
+  - 타입을 자동으로 직렬화/역직렬화(serialize/parse)
+
+  - router.push() 같은 로직 없이 자동으로 URL 업데이트 가능
+
+## 기본 사용 예시
+
+```javascript
+"use client";
+
+import { useQueryState } from "nuqs";
+
+export default function MyComponent() {
+  const [page, setPage] = useQueryState("page", {
+    parse: Number,
+    serialize: String,
+  });
+
+  return (
+    <div>
+      <p>현재 페이지: {page}</p>
+      <button onClick={() => setPage((page ?? 1) + 1)}>다음 페이지</button>
+    </div>
+  );
+}
+```
+
+## 여러 쿼리 동시에
+
+```javascript
+const [category, setCategory] = useQueryState("category");
+const [sort, setSort] = useQueryState("sort");
+```
+
+## 객체처럼 여러 쿼리 동시 관리
+
+```javascript
+const [query, setQuery] = useQueryStates({
+  page: withDefault(NumberParam, 1),
+  sort: StringParam,
+});
+```

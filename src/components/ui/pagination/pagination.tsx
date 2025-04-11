@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { Dispatch, SetStateAction } from "react";
+// import { useRouter } from "next/navigation";
 import {
   Pagination as ShadcnPagination,
   PaginationContent,
@@ -13,17 +13,18 @@ import {
 
 interface IPagination {
   page: number;
+  goToPage: Dispatch<SetStateAction<number | null>>;
   limit: number;
   totalCount: number;
 }
 
-const Pagination = ({ page, limit, totalCount }: IPagination) => {
-  const router = useRouter();
+const Pagination = ({ page, goToPage, limit, totalCount }: IPagination) => {
   const totalPage = Math.ceil(totalCount / limit);
+  // const router = useRouter();
 
-  const goToPage = (pageNum: number) => {
-    router.push(`?page=${pageNum}`);
-  };
+  // const goToPage = (pageNum: number) => {
+  //   router.push(`?page=${pageNum}`);
+  // };
 
   return (
     <ShadcnPagination>
