@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="flex justify-center items-center h-screen gap-30 bg-blue-200">
       <Link
-        href="/app-ssr?q=app"
+        href="/app-ssr?q=app&fruit=apple&fruit=banana&fruit=cherry"
         className="flex justify-center items-center w-40 h-40 bg-red-200 text-white text-2xl"
       >
         <span>App Router</span>

@@ -8,18 +8,28 @@ Next.js에는 두 가지 주요 라우팅 방식이 있습니다.
 ## App Router 사용법
 
 ```javascript
+// app/app-ssr/page.tsx
+// /app-ssr?q=app&fruit=apple&fruit=banana&fruit=cherry
+
 export default async function AppSSRPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>,
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>,
 }) {
-  const { q } = await searchParams;
+  const { q, fruit } = await searchParams;
+  const search_query = typeof q === "string" ? q : "";
+  const fruitList = Array.isArray(fruit) ? fruit : fruit ? [fruit] : [];
 
   return (
     <div>
       <h1>App Router SSR 페이지</h1>
-      <p>서버에서 읽은 query: {q}</p>
+      <p>서버에서 읽은 query: {search_query}</p>
+      {fruitList.map((fruit, idx) => (
+        <p key={fruit}>
+          서버에서 읽은 fruit 배열 {idx + 1} : {fruit}
+        </p>
+      ))}
     </div>
   );
 }
@@ -31,6 +41,8 @@ export default async function AppSSRPage({
 ## Page Router 사용법
 
 ```javascript
+// pages/page-ssr.tsx
+// /app-ssr?q=page
 import { GetServerSideProps } from "next";
 
 interface MySSRPageProps {
