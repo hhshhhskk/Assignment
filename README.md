@@ -5,7 +5,65 @@ Next.js에는 두 가지 주요 라우팅 방식이 있습니다.
 - **Pages Router**: Next.js 초기부터 존재한 방식 (`/pages` 디렉토리 기반)
 - **App Router**: Next.js 13부터 도입된 새로운 방식 (`/app` 디렉토리 기반, 현재 권장)
 
----
+## App Router 사용법
+
+```javascript
+export default async function AppSSRPage({
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>,
+}) {
+  const { q } = await searchParams;
+
+  return (
+    <div>
+      <h1>App Router SSR 페이지</h1>
+      <p>서버에서 읽은 query: {q}</p>
+    </div>
+  );
+}
+```
+
+- Next.js 13~ app 디렉토리 구조에서는 page.tsx나 layout.tsx 컴포넌트가 호출될 때,
+  Next.js가 params, searchParam를 자동으로 넘겨 줍니다.
+
+## Page Router 사용법
+
+```javascript
+import { GetServerSideProps } from "next";
+
+interface MySSRPageProps {
+  q: string;
+}
+
+export default function MySSRPage({ q }: MySSRPageProps) {
+  return (
+    <div>
+      <h1>Page Router SSR 페이지</h1>
+      <p>서버에서 온 메세지: {q}</p>
+    </div>
+  );
+}
+
+export const getServerSideProps: GetServerSideProps<MySSRPageProps> = async (
+  context
+) => {
+  const { query } = context;
+
+  const q = typeof query.q === "string" ? query.q : "";
+
+  return {
+    props: {
+      q,
+    },
+  };
+};
+```
+
+- Next.js 13 이전 버전 Page 디렉토리 구조에서는 getServerSideProps로 params, searchParams를 가져온다.
+
+## 차이점 표로 보기
 
 | 항목          | **App Router (`/app`)**                    | **Pages Router (`/pages`)**               |
 | ------------- | ------------------------------------------ | ----------------------------------------- |
