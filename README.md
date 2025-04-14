@@ -16,7 +16,9 @@
         page.tsx            # /ssg 페이지
     /isr
         page.tsx            # /isr 페이지
-
+  /board
+    /[id]
+        page.tsx            # /board/:id 페이지
 ```
 
 ### Page Router - 파일 단위
@@ -161,3 +163,21 @@ export default ISRPage;
 #### page router
 
 - page 단위로 클라이언트 컴포넌트 전체를 js번들로 보냄
+
+## 차이점 표로 보기
+
+| 항목          | **App Router (`/app`)**                    | **Pages Router (`/pages`)**               |
+| ------------- | ------------------------------------------ | ----------------------------------------- |
+| 도입 시기     | Next.js 13~                                | Next.js 초기부터                          |
+| 라우팅 방식   | 폴더 단위 중첩 라우팅                      | 파일 단위 라우팅                          |
+| 페이지 구성   | `layout.tsx`, `page.tsx`, `loading.tsx` 등 | `_app.tsx`, `_document.tsx`, `_error.tsx` |
+| 데이터 패칭   | `fetch()` + `cache`, `revalidate`          | `getServerSideProps`, `getStaticProps` 등 |
+| 렌더링 방식   | React Server Components (RSC) 기반         | 클라이언트 컴포넌트 기반                  |
+| SSR 지원      | ✅ (기본 지원)                             | ✅ (`getServerSideProps`)                 |
+| SSG/ISR 지원  | ✅ (`revalidate`, `generateStaticParams`)  | ✅ (`getStaticProps`, `getStaticPaths`)   |
+| 중첩 레이아웃 | ✅ 지원 (`layout.tsx`)                     | ❌ 직접 구성해야 함                       |
+| 컴포넌트 분리 | `"use client"`로 명확히 구분               | 전부 클라이언트 컴포넌트                  |
+| 코드 스플리팅 | 서버/클라이언트 분리로 효율적              | 페이지 단위                               |
+| 공식 권장     | ✅ ✅ (Next 15 기준)                       | ⚠️ 유지되지만 신규 기능 비권장            |
+
+---
