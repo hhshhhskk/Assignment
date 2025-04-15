@@ -55,6 +55,15 @@
 
 ### app router
 
+dynamic
+
+- 레이아웃이나 페이지의 동적 동작을 완전히 정적이거나 완전히 동적으로 변경합니다.
+
+```javascript
+export const dynamic = "auto";
+// 'auto' | 'force-dynamic' | 'error' | 'force-static'
+```
+
 #### SSR
 
 - 요청이 들어올 때마다 서버에서 HTML을 즉시 생성
@@ -64,7 +73,7 @@
 ```javascript
 import React from "react";
 
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 const SSRPage = async () => {
   await fetch("https://example.com", { cache: "no-store" });
@@ -88,13 +97,12 @@ export default SSRPage;
 #### SSG
 
 - 빌드 시점에서 미리 HTML을 생성해서 배포
-- fetch() + {cache: "force-cache"} 작성
-- **export const dynamic = "force-static"** 를 적으면 SSG를 강제 할 수 있다.
+- **export const dynamic = "force-static"** 를 작성
 
 ```javascript
 import React from "react";
 
-// export const dynamic = "force-static";
+export const dynamic = "force-static";
 
 const SSGPage = async () => {
   await fetch("https://example.com", {
@@ -121,7 +129,6 @@ export default SSGPage;
 #### ISR
 
 - 빌드 시점에서 생성하고 주기적으로 재생성
-- fetch() + {cache: "force-cache"} 작성
 - **export const dynamic = "force-static"** 를 적으면 SSG를 강제 할 수 있다.
 
 ```javascript
